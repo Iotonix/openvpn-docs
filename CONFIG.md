@@ -23,10 +23,6 @@ After generating the required keys and certificates using Easy-RSA, you need to 
 
    **Note:** It is crucial to secure the `/etc/openvpn` directory since it contains sensitive certificates and keys. You may want to set appropriate permissions to prevent unauthorized access.
 
-   ```bash
-   chmod 700 /etc/openvpn/server
-   ```
-
 ## Step 10: Create the OpenVPN Server Configuration File
 
 Next, create the configuration file for the OpenVPN server.
@@ -49,7 +45,7 @@ Next, create the configuration file for the OpenVPN server.
    key /etc/openvpn/server/server.key
    dh /etc/openvpn/server/dh.pem
 
-   server 167.172.84.88 255.255.255.0  # Defines the IP address range that will be assigned to connected clients.
+   server 10.8.0.0 255.255.255.0  # Defines the IP address range that will be assigned to connected clients.
    ifconfig-pool-persist ipp.txt
 
    push "dhcp-option DNS 8.8.8.8"
@@ -73,7 +69,38 @@ Next, create the configuration file for the OpenVPN server.
 
 3. Save and close the file (`CTRL + X`, then `Y`, and `Enter`).
 
-## Step 12: Configure Firewall Rules
+## Step 12: Disable and Reset UFW Rules (Optional)
+
+If you need to clear existing firewall rules and start with a clean slate, you can disable and reset UFW. **Proceed with caution**, especially if you are managing a remote server, as incorrect steps can cause you to lose access.
+
+1. **Disable UFW:**
+
+   ```bash
+   ufw disable
+   ```
+
+   **WARNING:** Disabling UFW will leave your server without firewall protection temporarily. Ensure that this action is safe in your environment.
+
+2. **Reset UFW Rules:**
+
+   ```bash
+   ufw reset
+   ```
+
+   **WARNING:** This command will remove all existing rules. Ensure you know the correct rules to reapply afterward, especially for SSH access, to avoid being locked out.
+
+3. **Re-enable UFW and Apply New Rules:**
+
+   - After resetting, add the necessary rules (e.g., for SSH, HTTP, HTTPS, etc.).
+   - Enable UFW again:
+
+   ```bash
+   ufw enable
+   ```
+
+   **WARNING:** Always verify that your SSH rule is configured before enabling UFW to avoid accidental lockout.
+
+## Step 13: Configure Firewall Rules
 
 To allow VPN traffic, you need to configure your firewall to open the necessary port and to restrict other traffic as per your requirement.
 
@@ -107,10 +134,14 @@ To allow VPN traffic, you need to configure your firewall to open the necessary 
    sysctl -p
    ```
 
-5. Configure the firewall to allow traffic for ports 80 and 443 without VPN, but require VPN for ports 50000 and upwards:
+5. Configure the firewall to allow traffic for specific ports without VPN:
 
    ```bash
-   Nequired for high ports'OT HERE
+   ufw allow 80/tcp  # Allow HTTP traffic without VPN
+   ufw allow 443/tcp # Allow HTTPS traffic without VPN
+   ufw allow 943     # Allow port 943 without VPN (OpenVPN admin UI, if used)
+   ufw allow 2223/tcp # Allow port 2223 without VPN
+   ufw allow OpenSSH # Allow SSH traffic without VPN
    ```
 
 ## Step 11: Enable and Start OpenVPN Service
