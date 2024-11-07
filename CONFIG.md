@@ -23,6 +23,10 @@ After generating the required keys and certificates using Easy-RSA, you need to 
 
    **Note:** It is crucial to secure the `/etc/openvpn` directory since it contains sensitive certificates and keys. You may want to set appropriate permissions to prevent unauthorized access.
 
+   ```bash
+   chmod 700 /etc/openvpn/server
+   ```
+
 ## Step 10: Create the OpenVPN Server Configuration File
 
 Next, create the configuration file for the OpenVPN server.
@@ -45,7 +49,7 @@ Next, create the configuration file for the OpenVPN server.
    key /etc/openvpn/server/server.key
    dh /etc/openvpn/server/dh.pem
 
-   server 10.8.0.0 255.255.255.0  # Defines the IP address range that will be assigned to connected clients.
+   server 167.172.84.88 255.255.255.0  # Defines the IP address range that will be assigned to connected clients.
    ifconfig-pool-persist ipp.txt
 
    push "dhcp-option DNS 8.8.8.8"
@@ -69,20 +73,64 @@ Next, create the configuration file for the OpenVPN server.
 
 3. Save and close the file (`CTRL + X`, then `Y`, and `Enter`).
 
+## Step 12: Configure Firewall Rules
+
+To allow VPN traffic, you need to configure your firewall to open the necessary port and to restrict other traffic as per your requirement.
+
+1. Allow UDP traffic on port 1194 (default OpenVPN port):
+
+   ```bash
+   ufw allow 1194/udp
+   ```
+
+2. Allow traffic to be forwarded:
+
+   ```bash
+   ufw allow OpenSSH
+
+   # WARNING: Enabling the firewall may cause loss of SSH connection if rules are incorrect. Double-check SSH rules first.
+   ufw enable  # WARNING: Enabling the firewall may cause loss of SSH connection if rules are incorrect. Double-check SSH rules first.
+
+   # WARNING: This command modifies system settings. Make sure IP forwarding is needed before proceeding.
+   echo 1 > /proc/sys/net/ipv4/ip_forward  # WARNING: This command modifies system settings. Make sure IP forwarding is needed before proceeding.
+   ```
+
+3. Add the following line to `/etc/sysctl.conf` to ensure IP forwarding is enabled permanently:
+
+   ```bash
+   net.ipv4.ip_forward = 1
+   ```
+
+4. Apply the changes:
+
+   ```bash
+   sysctl -p
+   ```
+
+5. Configure the firewall to allow traffic for ports 80 and 443 without VPN, but require VPN for ports 50000 and upwards:
+
+   ```bash
+   Nequired for high ports'OT HERE
+   ```
+
 ## Step 11: Enable and Start OpenVPN Service
 
-Now that the configuration file is in place, you can start and enable the OpenVPN service.
+Now that the configuration file is in place and the firewall rules are configured, you can start and enable the OpenVPN service.
 
 1. Enable the OpenVPN service to start on boot:
 
    ```bash
-   systemctl enable openvpn-server@server
+
+   # WARNING: Ensure all configurations are correct before enabling OpenVPN to start on boot. Mistakes might lead to loss of access.
+   systemctl enable openvpn-server@server  # WARNING: Ensure all configurations are correct before enabling OpenVPN to start on boot.
    ```
 
 2. Start the OpenVPN service:
 
    ```bash
-   systemctl start openvpn-server@server
+
+   # WARNING: Starting the VPN service might interrupt existing network connections. Be cautious if working remotely.
+   systemctl start openvpn-server@server  # WARNING: Starting the VPN service might interrupt existing network connections. Be cautious if working remotely.
    ```
 
 3. Check the status to ensure the service is running:
@@ -92,8 +140,6 @@ Now that the configuration file is in place, you can start and enable the OpenVP
    ```
 
    You should see the service in the **active (running)** state.
-
-## Step 12: Configure Firewall Rules
 
 To allow VPN traffic, you need to configure your firewall to open the necessary port and to restrict other traffic as per your requirement.
 
