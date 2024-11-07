@@ -23,10 +23,6 @@ After generating the required keys and certificates using Easy-RSA, you need to 
 
    **Note:** It is crucial to secure the `/etc/openvpn` directory since it contains sensitive certificates and keys. You may want to set appropriate permissions to prevent unauthorized access.
 
-   ```bash
-      chmod 700 /etc/openvpn/server
-   ```
-
 ## Step 10: Create the OpenVPN Server Configuration File
 
 Next, create the configuration file for the OpenVPN server.
@@ -52,7 +48,6 @@ Next, create the configuration file for the OpenVPN server.
    server 10.8.0.0 255.255.255.0  # Defines the IP address range that will be assigned to connected clients.
    ifconfig-pool-persist ipp.txt
 
-   push "redirect-gateway def1 bypass-dhcp"  # Forces all client traffic to go through the VPN.
    push "dhcp-option DNS 8.8.8.8"
    push "dhcp-option DNS 8.8.4.4"
 
@@ -67,6 +62,9 @@ Next, create the configuration file for the OpenVPN server.
    verb 3
 
    # Reminder: Replace [YOUR_SERVER_IP] with the actual server IP or domain name.
+
+   # Allow specific ports without VPN
+   # Use firewall rules to limit port ranges that require VPN
    ```
 
 3. Save and close the file (`CTRL + X`, then `Y`, and `Enter`).
@@ -97,7 +95,7 @@ Now that the configuration file is in place, you can start and enable the OpenVP
 
 ## Step 12: Configure Firewall Rules
 
-To allow VPN traffic, you need to configure your firewall to open the necessary port.
+To allow VPN traffic, you need to configure your firewall to open the necessary port and to restrict other traffic as per your requirement.
 
 1. Allow UDP traffic on port 1194 (default OpenVPN port):
 
@@ -123,6 +121,14 @@ To allow VPN traffic, you need to configure your firewall to open the necessary 
 
    ```bash
    sysctl -p
+   ```
+
+5. Configure the firewall to allow traffic for ports 80 and 443 without VPN, but require VPN for ports 50000 and upwards:
+
+   ```bash
+   ufw allow 80/tcp
+   ufw allow 443/tcp
+   ufw allow from any to any port 50000:65535 proto tcp comment 'VPN required for high ports'
    ```
 
 ## Step 13: Generate Client Certificates and Keys
@@ -197,3 +203,5 @@ Create a client configuration file that will be used by clients to connect to th
 - **Use Strong Passphrases:** Always use strong passphrases for the CA and server keys to enhance security.
 - **Restrict Access to OpenVPN Server:** Use a firewall to restrict access to the OpenVPN server to trusted IP addresses.
 - **Keep Software Updated:** Regularly update OpenVPN, Easy-RSA, and other related software to protect against known vulnerabilities.
+
+These steps complete the basic configuration of an OpenVPN server and client. Let me know if you need additional steps, further explanations, or help troubleshooting any part of the setup!
