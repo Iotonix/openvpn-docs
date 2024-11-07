@@ -1,10 +1,6 @@
-# OpenVPN Ubuntu server 22.04 Installation Guide
-
-[Back to INDEX](README.md)
+``markdown
 
 # OpenVPN Ubuntu Server 22.04 Installation Guide
-
-[Back to INDEX](README.md)
 
 This guide provides step-by-step instructions for installing and configuring an OpenVPN server on Ubuntu 22.04 LTS.
 
@@ -14,84 +10,117 @@ This guide provides step-by-step instructions for installing and configuring an 
 - A basic understanding of Linux command-line operations.
 - A registered domain name or a static public IP address for your server. (Optional, but recommended for easier access)
 
-## Step 1: Update System Packages
+## Step 1: Switch to Root User
 
-1. Open a terminal window on your Ubuntu server.
-2. Update the package list and upgrade installed packages to their latest versions:
+1. To ensure you have all the necessary permissions throughout the installation, switch to the root user:
+
    ```bash
-   sudo apt update
-   sudo apt upgrade -y
+   sudo su -
    ```
 
-## Step 2: install OpenVPN
+## Step 2: Update System Packages
 
-```bash
-sudo apt install -y openvpn
-# and observe the status after the installated has succeeded
-sudo sudo systemctl status openvpn
+1. Update the package list and upgrade installed packages to their latest versions:
+
+   ```bash
+   apt update
+   apt upgrade -y
+   ```
+
+## Step 3: Install OpenVPN
+
+1. Install OpenVPN by running the following command:
+
+   ```bash
+   apt install -y openvpn
+   ```
+
+2. Check the status of the OpenVPN service to ensure it was installed properly:
+
+   ```bash
+   systemctl status openvpn
+   ```
+
+   ![OpenVPN Status](./images/OpenVpnStatus.png)
+   You should see that the service is loaded and enabled, but if the status shows as **active (exited)**, it may need further configuration.
+
+## Step 4: Install Easy-RSA
+
+Easy-RSA is a utility for managing the Public Key Infrastructure (PKI) needed by OpenVPN. To install it, follow these steps:
+
+1. Download Easy-RSA by cloning the Git repository, as it may not be available via apt on Ubuntu 22.04. You need root permissions to create the directory in `/etc`:
+
+   ```bash
+   apt install -y git
+   git clone https://github.com/OpenVPN/easy-rsa.git /etc/easy-rsa
+   ```
+
+2. Navigate to the Easy-RSA version 3 directory (as Easy-RSA files are located under `easyrsa3`):
+
+   ```bash
+   cd /etc/easy-rsa/easyrsa3
+   ```
+
+3. Initialize the PKI environment:
+
+   ```bash
+   ./easyrsa init-pki
+   ```
+
+## Step 5: Build the Certificate Authority (CA)
+
+Now that the PKI has been initialized, you can create your Certificate Authority (CA):
+
+1. Create the Certificate Authority:
+
+   ```bash
+   ./easyrsa build-ca
+   ```
+
+   You will be prompted to enter a passphrase for the new CA key. This passphrase is used to protect your CA's private key, which is crucial for securing your VPN. Choose a strong passphrase and make sure to remember it, as it will be needed whenever you generate or sign new certificates.
+
+   You will also be prompted to enter a common name for the CA. You can use a name like "OpenVPN-CA" or any name that represents your use case.
+
+   ![easyrsa-build-CA](./images/easyrsa-buildca.png)
+
+## Step 6: Generate Server Certificate and Key
+
+Once the CA is created, you need to generate a certificate and key for the VPN server.
+
+1. Generate the server certificate and key:
+
+   ```bash
+   ./easyrsa gen-req server nopass
+   ```
+
+   This will generate a server request without a passphrase. The `nopass` option means the key won't be encrypted with a passphrase, which is convenient for automated server start-ups but comes with a reduced security level.
+
+2. Sign the server certificate request using the CA:
+
+   ```bash
+   ./easyrsa sign-req server server
+   ```
+
+   You will be asked to confirm that you want to sign the certificate. Type `yes` to proceed.
+
+   This step generates a signed server certificate that will be used by the OpenVPN server to authenticate itself to clients.
+
+## Step 7: Generate Diffie-Hellman Parameters
+
+Diffie-Hellman parameters are needed for the server to establish secure connections.
+
+1. Generate the Diffie-Hellman parameters:
+
+   ```bash
+   ./easyrsa gen-dh
+   ```
+
+   This step may take some time depending on the server's processing power.
+
+---
+
+You can continue adding further steps or details for configuration as we proceed. Let me know if you need help configuring OpenVPN further or adding more steps to this guide!
+
 ```
 
-![OpenVPN Status](./images/OpenVpnStatus.png)
-
-## Step 3: Generate SSL/TLS Certificates
-
-1.  **Install EasyRSA:** EasyRSA is a tool that simplifies the process of generating certificates. Install it using the following command:
-
-    ```bash
-    sudo apt install easyrsa -y
-    ```
-
-2.  **Navigate to the EasyRSA directory:**
-
-    ```bash
-    cd /usr/share/easyrsa/3
-    ```
-
-3.  **Initialize the Public Key Infrastructure (PKI):**
-
-    ```bash
-    ./easyrsa init-pki
-    ```
-
-4.  **Create a Certificate Authority (CA):**
-
-    ```bash
-    ./easyrsa build-ca nopass
-    ```
-
-    (This command creates a CA certificate without a passphrase. For production environments, it's highly recommended to use a passphrase.)
-
-5.  **Generate a server key and certificate:**
-
-    ```bash
-    ./easyrsa gen-req server nopass
-    ./easyrsa sign-req server server
-    ```
-
-6.  **Generate a client key and certificate:**
-
-    ```bash
-    ./easyrsa gen-req client nopass
-    ./easyrsa sign-req client client
-    ```
-
-7.  **Generate Diffie-Hellman parameters:** (for secure key exchange)
-
-    ```bash
-    ./easyrsa gen-dh
-    ```
-
-8.  **Copy the generated files:** Copy the following files to your OpenVPN configuration directory (usually `/etc/openvpn`):
-
-    ```bash
-    sudo cp pki/ca.crt pki/issued/server.crt pki/private/server.key pki/dh.pem /etc/openvpn
-    sudo cp pki/issued/client.crt pki/private/client.key /etc/openvpn
-    ```
-
-**Important Notes:**
-
-- **Security:** In a production environment, **always** use a strong passphrase when generating your CA and server keys.
-- **File Locations:** Make sure to keep track of where you store your certificates and keys.
-- **Client Certificates:** You'll need to distribute the `client.crt` and `client.key` files to each client device that needs to connect to the VPN.
-
-This completes the certificate generation process. You can now move on to configuring your OpenVPN server.
+```
