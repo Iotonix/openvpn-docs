@@ -40,31 +40,30 @@ Next, create the configuration file for the OpenVPN server.
 2. Add the following configuration to the file:
 
    ```
-   port 1194
-   proto udp  # Specifies that the VPN should use the UDP protocol.
-   dev tun    # Indicates that a TUN device should be used (for routing IP packets).
+    port 1194
+        proto udp  # Specifies that the VPN should use the UDP protocol.
+        dev tun    # Indicates that a TUN device should be used (for routing IP packets).
 
-   ca /etc/openvpn/server/ca.crt
-   cert /etc/openvpn/server/server.crt
-   key /etc/openvpn/server/server.key
-   dh /etc/openvpn/server/dh.pem
+        ca /etc/openvpn/server/ca.crt
+        cert /etc/openvpn/server/server.crt
+        key /etc/openvpn/server/server.key
+        dh /etc/openvpn/server/dh.pem
 
-   server 10.8.0.0 255.255.255.0  # Defines the IP address range that will be assigned to connected clients.
-   ifconfig-pool-persist ipp.txt
+        server 10.8.0.0 255.255.255.0  # Defines the IP address range that will be assigned to connected clients.
+        ifconfig-pool-persist ipp.txt
 
-   push "dhcp-option DNS 8.8.8.8"
-   push "dhcp-option DNS 8.8.4.4"
+        push "dhcp-option DNS 8.8.8.8"
+        push "dhcp-option DNS 8.8.4.4"
 
-   keepalive 10 120
-   cipher AES-256-CBC
-   user nobody
-   group nogroup
-   persist-key
-   persist-tun
+        keepalive 10 120
+        data-ciphers AES-256-GCM:AES-128-GCM:CHACHA20-POLY1305
+        user nobody
+        group nogroup
+        persist-key
+        persist-tun
 
-   status openvpn-status.log
-   verb 3
-
+        status openvpn-status.log
+        verb 3
    # Allow specific ports without VPN
    # Use firewall rules to limit port ranges that require VPN (see below)
    ```
@@ -75,33 +74,121 @@ Next, create the configuration file for the OpenVPN server.
 
 If you need to clear existing firewall rules and start with a clean slate, you can disable and reset UFW. **Proceed with caution**, especially if you are managing a remote server, as incorrect steps can cause you to lose access.
 
-1. **Disable UFW:**
+1.  **Disable UFW:**
 
-   ```bash
-   ufw disable
-   ```
+    ```bash
+    ufw disable
+    # In our case we had many ports open and will them all require to fo through VPN.
+    ufw reset
+    ```
 
-   **WARNING:** Disabling UFW will leave your server without firewall protection temporarily. Ensure that this action is safe in your environment.
+    **WARNING:** Disabling UFW will leave your server without firewall protection temporarily. Ensure that this action is safe in your environment.
 
-2. **Reset UFW Rules:**
+2.  **Modify /etc/ufw/before.rules:**
 
-   ```bash
-   ufw reset
-   # In our case we had many ports open and will them all require to fo through VPN.
-   ```
+    ```bash
+    nano /etc/ufw/before.rules
+    ```
 
-   **WARNING:** This command will remove all existing rules. Ensure you know the correct rules to reapply afterward, especially for SSH access, to avoid being locked out.
+    Our Example we include:
 
-3. **Re-enable UFW and Apply New Rules:**
+    ```bash
+        # /etc/ufw/before.rules
 
-   - After resetting, add the necessary rules (e.g., for SSH, HTTP, HTTPS, etc.).
-   - Enable UFW again:
+        # START UFW BEFORE RULES
+        *filter
+        :ufw-before-input - [0:0]
+        :ufw-before-output - [0:0]
+        :ufw-before-forward - [0:0]
+        :ufw-not-local - [0:0]
+        # End of required lines
 
-   ```bash
-   ufw enable
-   ```
+        # Allow all on loopback interface
+        -A ufw-before-input -i lo -j ACCEPT
+        -A ufw-before-output -o lo -j ACCEPT
 
-   **WARNING:** Always verify that your SSH rule is configured before enabling UFW to avoid accidental lockout.
+        # Allow established and related connections
+        -A ufw-before-input -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+        -A ufw-before-output -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+        -A ufw-before-forward -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+        # Drop invalid packets
+        -A ufw-before-input -m conntrack --ctstate INVALID -j ufw-logging-deny
+        -A ufw-before-input -m conntrack --ctstate INVALID -j DROP
+
+        # Allow specific ICMP types for INPUT
+        -A ufw-before-input -p icmp --icmp-type destination-unreachable -j ACCEPT
+        -A ufw-before-input -p icmp --icmp-type time-exceeded -j ACCEPT
+        -A ufw-before-input -p icmp --icmp-type parameter-problem -j ACCEPT
+        -A ufw-before-input -p icmp --icmp-type echo-request -j ACCEPT
+
+        # Allow specific ICMP types for FORWARD
+        -A ufw-before-forward -p icmp --icmp-type destination-unreachable -j ACCEPT
+        -A ufw-before-forward -p icmp --icmp-type time-exceeded -j ACCEPT
+        -A ufw-before-forward -p icmp --icmp-type parameter-problem -j ACCEPT
+        -A ufw-before-forward -p icmp --icmp-type echo-request -j ACCEPT
+
+        # Allow DHCP client to work
+        -A ufw-before-input -p udp --sport 67 --dport 68 -j ACCEPT
+
+        # UFW Not Local Rules
+        -A ufw-before-input -j ufw-not-local
+        -A ufw-not-local -m addrtype --dst-type LOCAL -j RETURN
+        -A ufw-not-local -m addrtype --dst-type MULTICAST -j RETURN
+        -A ufw-not-local -m addrtype --dst-type BROADCAST -j RETURN
+        -A ufw-not-local -m limit --limit 3/min --limit-burst 10 -j ufw-logging-deny
+        -A ufw-not-local -j DROP
+
+        # Allow MULTICAST mDNS for service discovery
+        -A ufw-before-input -p udp -d 224.0.0.251 --dport 5353 -j ACCEPT
+
+        # Allow MULTICAST UPnP for service discovery
+        -A ufw-before-input -p udp -d 239.255.255.250 --dport 1900 -j ACCEPT
+
+        # Forwarding rules for OpenVPN
+        # Allow traffic from VPN clients to the external network
+        -A ufw-before-forward -i tun0 -o eth0 -j ACCEPT
+        # Allow return traffic from the external network to VPN clients
+        -A ufw-before-forward -i eth0 -o tun0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+        # END UFW BEFORE RULES
+        COMMIT
+
+        # NAT Table Rules
+        *nat
+        :POSTROUTING ACCEPT [0:0]
+
+        # Enable NAT for VPN subnet through eth0
+        -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+
+        COMMIT
+
+    ```
+
+    Explanation of Key Sections:
+
+         Filter Table (*filter):
+             Loopback Traffic: Allows all traffic on the loopback interface (lo), ensuring local processes can communicate without restrictions.
+             Established Connections: Permits traffic for established and related connections, maintaining ongoing sessions.
+             ICMP Traffic: Allows necessary ICMP types for network diagnostics and functionality.
+             Forwarding Rules:
+                 -A ufw-before-forward -i tun0 -o eth0 -j ACCEPT: Allows VPN clients (tun0) to send traffic to the external network (eth0).
+                 -A ufw-before-forward -i eth0 -o tun0 -m state --state RELATED,ESTABLISHED -j ACCEPT: Allows return traffic from the external network to VPN clients.
+
+         NAT Table (*nat):
+             POSTROUTING Chain:
+                 -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE: Implements NAT for the VPN subnet (10.8.0.0/24) when accessing the external network (eth0). This allows VPN clients to share the server's public IP for internet access.
+
+3.  **Re-enable UFW and Apply New Rules:**
+
+    - After resetting, add the necessary rules (e.g., for SSH, HTTP, HTTPS, etc.).
+    - Enable UFW again:
+
+    ```bash
+    ufw enable
+    ```
+
+    **WARNING:** Always verify that your SSH rule is configured before enabling UFW to avoid accidental lockout.
 
 ## Step 12: Configure Firewall Rules
 
@@ -186,3 +273,5 @@ Now that the configuration file is in place and the firewall rules are configure
 These steps complete the basic configuration of an OpenVPN server and client. Let me know if you need additional steps, further explanations, or help troubleshooting any part of the setup!
 
 [Continue to client](CLIENT.md)
+
+[Back to INDEX](README.md)
