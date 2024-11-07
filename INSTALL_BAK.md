@@ -1,6 +1,5 @@
 # OpenVPN Ubuntu Server 22.04 Installation Guide
 
-[Back to INDEX](README.md)
 This guide provides step-by-step instructions for installing and configuring an OpenVPN server on Ubuntu 22.04 LTS.
 
 ## Prerequisites
@@ -8,10 +7,6 @@ This guide provides step-by-step instructions for installing and configuring an 
 - A server running Ubuntu 22.04 LTS with root or sudo access.
 - A basic understanding of Linux command-line operations.
 - A registered domain name or a static public IP address for your server. (Optional, but recommended for easier access)
-
-## Important Note: Document Your Passphrases
-
-**Note:** During the process of creating a Certificate Authority (CA), you will be prompted to enter a passphrase for the new CA key. **This passphrase is critical for securing your VPN** and will be needed whenever you generate or sign new certificates. Make sure to **write down this passphrase in a secure place**. Without it, you will not be able to proceed with further configuration or manage your CA.
 
 ## Step 1: Switch to Root User
 
@@ -44,9 +39,8 @@ This guide provides step-by-step instructions for installing and configuring an 
    systemctl status openvpn
    ```
 
-   You should see that the service is loaded and enabled, but if the status shows as **active (exited)**, it may need further configuration.
-
    ![OpenVPN Status](./images/OpenVpnStatus.png)
+   You should see that the service is loaded and enabled, but if the status shows as **active (exited)**, it may need further configuration.
 
 ## Step 4: Install Easy-RSA
 
@@ -81,7 +75,7 @@ Now that the PKI has been initialized, you can create your Certificate Authority
    ./easyrsa build-ca
    ```
 
-   You will be prompted to enter a passphrase for the new CA key. **This passphrase is used to protect your CA's private key, which is crucial for securing your VPN**. Choose a strong passphrase and make sure to **document it securely**, as it will be needed whenever you generate or sign new certificates.
+   You will be prompted to enter a passphrase for the new CA key. This passphrase is used to protect your CA's private key, which is crucial for securing your VPN. Choose a strong passphrase and make sure to remember it, as it will be needed whenever you generate or sign new certificates.
 
    You will also be prompted to enter a common name for the CA. You can use a name like "OpenVPN-CA" or any name that represents your use case.
 
@@ -121,34 +115,6 @@ Diffie-Hellman parameters are needed for the server to establish secure connecti
 
    This step may take some time depending on the server's processing power.
 
-## Step 8: Restarting the Entire Easy-RSA Process
-
-If you need to start over, for example, if you forgot the CA passphrase or made an error during the setup, you can completely reset the Easy-RSA PKI environment:
-
-1. Navigate to the Easy-RSA directory:
-
-   ```bash
-   cd /etc/easy-rsa/easyrsa3
-   ```
-
-2. Remove the existing PKI directory to reset everything:
-
-   ```bash
-   rm -rf pki
-   ```
-
-3. Reinitialize the PKI environment:
-
-   ```bash
-   ./easyrsa init-pki
-   ```
-
-   This will allow you to restart the process from Step 5, where you can rebuild the CA with a new passphrase.
-
-**Remember:** Always securely document your passphrase to avoid needing to restart the process.
-
-[Back to INDEX](README.md)
-
-[Continue to Configure](CONFIG.md)
-
 ---
+
+You can continue adding further steps or details for configuration as we proceed. Let me know if you need help configuring OpenVPN further or adding more steps to this guide!
