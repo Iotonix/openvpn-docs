@@ -1,4 +1,24 @@
-# OpenVPN Server Configuration Guide
+# OpenVPN Installation & Configuration Guide for Mobile Devices
+
+## Server Configuration Guide
+
+<style>
+{% include styles.css %}
+</style>
+
+<div class="container">
+    <div class="sidebar">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="INSTALL.md">Server Installation Guide</a></li>
+            <li><a href="CONFIG.md">Server Configuration Guide</a></li>
+            <li><a href="CLIENT.md">Client Configuration Guide</a></li>
+            <li><a href="OPERATIONS.md">Operations Guide</a></li>
+            <li><a href="ADVANCED.md">Advanced Topics Guide</a></li>
+            <li><a href="FAQ.md">Frequently Asked Questions</a></li>
+        </ul>
+    </div>
+</div>
 
 In this document, we will continue from where we left off after setting up the Easy-RSA environment and generating the necessary certificates and keys. This guide will help you configure the OpenVPN server and finalize its setup on Ubuntu 22.04 LTS.
 [Back to INDEX](README.md)

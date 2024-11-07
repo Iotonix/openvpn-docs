@@ -1,6 +1,24 @@
-# OpenVPN Ubuntu Server 22.04 Installation Guide
+# OpenVPN Installation Guide for Mobile Devices
 
-[Back to INDEX](README.md)
+## Server Installation Guide
+
+<style>
+{% include styles.css %}
+</style>
+
+<div class="container">
+    <div class="sidebar">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="INSTALL.md">Server Installation Guide</a></li>
+            <li><a href="CONFIG.md">Server Configuration Guide</a></li>
+            <li><a href="CLIENT.md">Client Configuration Guide</a></li>
+            <li><a href="OPERATIONS.md">Operations Guide</a></li>
+            <li><a href="ADVANCED.md">Advanced Topics Guide</a></li>
+            <li><a href="FAQ.md">Frequently Asked Questions</a></li>
+        </ul>
+    </div>
+</div>
 
 This guide provides step-by-step instructions for installing and configuring an OpenVPN server on Ubuntu 22.04 LTS.
 
@@ -147,10 +165,3 @@ If you need to start over, for example, if you forgot the CA passphrase or made 
    This will allow you to restart the process from Step 5, where you can rebuild the CA with a new passphrase.
 
 **Remember:** Always securely document your passphrase to avoid needing to restart the process.
-
-[Back to INDEX](README.md)
-
-[Continue to Configure](CONFIG.md)
-[Continue to Installations](INSTALL.md)
-
----
