@@ -1,14 +1,11 @@
 # OpenVPN Installation Guide for Mobile Devices
 
-{% raw %}
-
 <style>
 {% include styles.css %}
 </style>
 
 <div class="container">
     <div class="sidebar">
-
         <h2>Table of Contents</h2>
         <ul>
             <li><a href="INSTALL.md">Installation Guide</a></li>
@@ -18,7 +15,6 @@
             <li><a href="ADVANCED.md">Advanced Topics Guide</a></li>
             <li><a href="FAQ.md">Frequently Asked Questions</a></li>
         </ul>
-
     </div>
     <div class="content">
 
@@ -58,4 +54,3 @@ For more information, please refer to the following documents:
 - [Frequently Asked Questions](FAQ.md)
 </div>
 </div>
-{% endraw %}
