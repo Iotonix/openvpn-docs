@@ -12,18 +12,18 @@
     <div class="sidebar">
         <h2>Table of Contents</h2>
         <ul>
-            <li><a href="INSTALL,html">Server Installation Guide</a></li>
-            <li><a href="CONFIG,html">Server Configuration Guide</a></li>
-            <li><a href="CLIENT,html">Client Configuration Guide</a></li>
-            <li><a href="OPERATIONS,html">Operations Guide</a></li>
-            <li><a href="ADVANCED,html">Advanced Topics Guide</a></li>
-            <li><a href="FAQ,html">Frequently Asked Questions</a></li>
+            <li><a href="INSTALL">Server Installation Guide</a></li>
+            <li><a href="CONFIG">Server Configuration Guide</a></li>
+            <li><a href="CLIENT">Client Configuration Guide</a></li>
+            <li><a href="OPERATIONS">Operations Guide</a></li>
+            <li><a href="ADVANCED">Advanced Topics Guide</a></li>
+            <li><a href="FAQ">Frequently Asked Questions</a></li>
         </ul>
     </div>
 </div>
 
 In this document, we will continue from where we left off after setting up the Easy-RSA environment and generating the necessary certificates and keys. This guide will help you configure the OpenVPN server and finalize its setup on Ubuntu 22.04 LTS.
-[Back to INDEX](README,html)
+[Back to INDEX](README)
 
 ## Step 9: Copy Certificates and Keys to OpenVPN Directory
 
@@ -295,6 +295,6 @@ Now that the configuration file is in place and the firewall rules are configure
 
 These steps complete the basic configuration of an OpenVPN server and client. Let me know if you need additional steps, further explanations, or help troubleshooting any part of the setup!
 
-[Continue to client](CLIENT,html)
+[Continue to client](CLIENT)
 
-[Back to INDEX](README,html)
+[Back to INDEX](README)
