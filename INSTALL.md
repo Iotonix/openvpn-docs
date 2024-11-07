@@ -1,6 +1,7 @@
 # OpenVPN Ubuntu Server 22.04 Installation Guide
 
 [Back to INDEX](README.md)
+
 This guide provides step-by-step instructions for installing and configuring an OpenVPN server on Ubuntu 22.04 LTS.
 
 ## Prerequisites
@@ -150,5 +151,6 @@ If you need to start over, for example, if you forgot the CA passphrase or made 
 [Back to INDEX](README.md)
 
 [Continue to Configure](CONFIG.md)
+[Continue to Installations](INSTALL.md)
 
 ---

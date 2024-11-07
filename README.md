@@ -1,5 +1,27 @@
 # OpenVPN Installation Guide for Mobile Devices
 
+{% raw %}
+
+<style>
+{% include styles.css %}
+</style>
+
+<div class="container">
+    <div class="sidebar">
+
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="INSTALL.md">Installation Guide</a></li>
+            <li><a href="CONFIG.md">Server Configuration Guide</a></li>
+            <li><a href="CLIENT.md">Client Configuration Guide</a></li>
+            <li><a href="OPERATIONS.md">Operations Guide</a></li>
+            <li><a href="ADVANCED.md">Advanced Topics Guide</a></li>
+            <li><a href="FAQ.md">Frequently Asked Questions</a></li>
+        </ul>
+
+    </div>
+    <div class="content">
+
 This repository provides a comprehensive guide for installing and configuring OpenVPN on mobile devices, specifically targeting trucks, tugboats, backhoes, and other vehicles commonly used in industrial settings.
 
 ## Motivation
@@ -29,5 +51,11 @@ While cloud-based VPN solutions and proprietary VPNs offer convenience, OpenVPN 
 For more information, please refer to the following documents:
 
 - [Installation Guide](INSTALL.md)
+- [Server Configuration Guide](CONFIG.md)
+- [Client Configuration Guide](CLIENT.md)
 - [Operations Guide](OPERATIONS.md)
+- [Avanced Topics Guide](ADVANCED.md)
 - [Frequently Asked Questions](FAQ.md)
+</div>
+</div>
+{% endraw %}

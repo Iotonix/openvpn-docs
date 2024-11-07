@@ -1,6 +1,7 @@
 # OpenVPN Client Configuration Guide for WSL
 
 This guide will help you set up an OpenVPN client on **a Linux based system** to connect to your OpenVPN server.
+[Back to INDEX](README.md)
 
 ## Prparation create the client certificates and keys on the VPN server
 

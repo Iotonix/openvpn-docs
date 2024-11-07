@@ -1,6 +1,7 @@
 # OpenVPN Server Configuration Guide
 
 In this document, we will continue from where we left off after setting up the Easy-RSA environment and generating the necessary certificates and keys. This guide will help you configure the OpenVPN server and finalize its setup on Ubuntu 22.04 LTS.
+[Back to INDEX](README.md)
 
 ## Step 9: Copy Certificates and Keys to OpenVPN Directory
 
