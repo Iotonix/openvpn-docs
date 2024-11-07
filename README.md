@@ -19,3 +19,15 @@ This guide is specifically tailored for installations on devices operating in en
 - **Backhoes:** Construction sites and earthmoving operations.
 
 We believe that by providing clear and accessible documentation, we can help our customers unlock the full potential of their IoT deployments.
+
+## Why OpenVPN?
+
+While cloud-based VPN solutions and proprietary VPNs offer convenience, OpenVPN stands out as our preferred choice due to its exceptional balance of cost-effectiveness and robust security. By leveraging OpenVPN's open-source nature and flexible configuration options, we empower our customers to establish secure connections without incurring the recurring costs associated with proprietary solutions. This approach ensures that businesses of all sizes can benefit from enterprise-grade security and reliable connectivity while maintaining control over their VPN infrastructure.
+
+## Related Documentation
+
+For more information, please refer to the following documents:
+
+- [Installation Guide](INSTALL.md)
+- [Operations Guide](OPERATIONS.md)
+- [Frequently Asked Questions](FAQ.md)
