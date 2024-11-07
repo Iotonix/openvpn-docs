@@ -16,7 +16,7 @@
             <li><a href="FAQ.md">Frequently Asked Questions</a></li>
         </ul>
     </div>
-    <div class="content">
+</div>
 
 This repository provides a comprehensive guide for installing and configuring OpenVPN on mobile devices, specifically targeting trucks, tugboats, backhoes, and other vehicles commonly used in industrial settings.
 
@@ -41,16 +41,3 @@ We believe that by providing clear and accessible documentation, we can help our
 ## Why OpenVPN?
 
 While cloud-based VPN solutions and proprietary VPNs offer convenience, OpenVPN stands out as our preferred choice due to its exceptional balance of cost-effectiveness and robust security. By leveraging OpenVPN's open-source nature and flexible configuration options, we empower our customers to establish secure connections without incurring the recurring costs associated with proprietary solutions. This approach ensures that businesses of all sizes can benefit from enterprise-grade security and reliable connectivity while maintaining control over their VPN infrastructure.
-
-## Related Documentation
-
-For more information, please refer to the following documents:
-
-- [Installation Guide](INSTALL.md)
-- [Server Configuration Guide](CONFIG.md)
-- [Client Configuration Guide](CLIENT.md)
-- [Operations Guide](OPERATIONS.md)
-- [Avanced Topics Guide](ADVANCED.md)
-- [Frequently Asked Questions](FAQ.md)
-</div>
-</div>
