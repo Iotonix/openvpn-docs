@@ -1,5 +1,3 @@
-``markdown
-
 # OpenVPN Ubuntu Server 22.04 Installation Guide
 
 This guide provides step-by-step instructions for installing and configuring an OpenVPN server on Ubuntu 22.04 LTS.
@@ -120,7 +118,3 @@ Diffie-Hellman parameters are needed for the server to establish secure connecti
 ---
 
 You can continue adding further steps or details for configuration as we proceed. Let me know if you need help configuring OpenVPN further or adding more steps to this guide!
-
-```
-
-```
