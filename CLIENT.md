@@ -1,3 +1,5 @@
+![AIT Logo](https://www.ait.co.th/wp-content/uploads/2023/03/logo.png)
+
 # OpenVPN Installation & Configuration Guide for Mobile Devices
 
 ## Client Configuration Guide
