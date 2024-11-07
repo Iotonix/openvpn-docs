@@ -184,3 +184,5 @@ Now that the configuration file is in place and the firewall rules are configure
 - **Keep Software Updated:** Regularly update OpenVPN, Easy-RSA, and other related software to protect against known vulnerabilities.
 
 These steps complete the basic configuration of an OpenVPN server and client. Let me know if you need additional steps, further explanations, or help troubleshooting any part of the setup!
+
+[Continue to client](CLIENT.md)
