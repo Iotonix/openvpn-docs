@@ -10,12 +10,12 @@
     <div class="sidebar">
         <h2>Table of Contents</h2>
         <ul>
-            <li><a href="INSTALL.md">Server Installation Guide</a></li>
-            <li><a href="CONFIG.md">Server Configuration Guide</a></li>
-            <li><a href="CLIENT.md">Client Configuration Guide</a></li>
-            <li><a href="OPERATIONS.md">Operations Guide</a></li>
-            <li><a href="ADVANCED.md">Advanced Topics Guide</a></li>
-            <li><a href="FAQ.md">Frequently Asked Questions</a></li>
+            <li><a href="INSTALL,html">Server Installation Guide</a></li>
+            <li><a href="CONFIG,html">Server Configuration Guide</a></li>
+            <li><a href="CLIENT,html">Client Configuration Guide</a></li>
+            <li><a href="OPERATIONS,html">Operations Guide</a></li>
+            <li><a href="ADVANCED,html">Advanced Topics Guide</a></li>
+            <li><a href="FAQ,html">Frequently Asked Questions</a></li>
         </ul>
     </div>
 </div>
